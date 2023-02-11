@@ -70,5 +70,8 @@ dependencies {
     // To include android specific parts
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
+    // Convertors to deserialize retrofit response
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+
 
 }
