@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.atulya.photogallery.core.api.FlickerApi
+import com.atulya.photogallery.core.repository.PhotoRepository
 import com.atulya.photogallery.databinding.FragmentPhotoGalleryBinding
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -39,34 +40,15 @@ class PhotoGalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /**
-         * Retrofit's default response type is [okhttp3.ResponseBody],
-         * To deserialize it into usable data we need to use
-         * converter to change it into desired type.
-         *
-         * Ex: we can specify a converter such as
-         * [ScalarsConverterFactory.create], which among other
-         * type will let retrofit to deserialize data to string
-         */
-
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("https://www.flickr.com/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-
-        /**
-         *  When we call `retrofit.create`, retrofit
-         *  generate code using the interface we passed to it.
-         *  It generates an Anonymous class containing
-         *  all the methods we need.
-         *
-         *  This code generation happens at runtime.
-         */
-        val flickerApi = retrofit.create<FlickerApi>()
-
         viewLifecycleOwner.lifecycleScope.launch {
-            val response = flickerApi.fetchContents()
-            Log.d(TAG, "onViewCreated: $response")
+            try {
+                val response = PhotoRepository().fetchPhotos()
+                Log.d(TAG, "onViewCreated: $response")
+            }
+            catch (e: Exception){
+                Log.d(TAG, "onViewCreated: Network request failed: $e")
+            }
+
         }
     }
 

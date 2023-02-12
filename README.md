@@ -27,3 +27,32 @@ implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 // To include android specific parts
 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 ```
+
+####To add Moshi:
+- Add kapt plugin in project level `build.gradle`, Make sure it is compatible with `kotlin.android`:
+```groovy
+plugins {
+//    ...
+//    ...
+    id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+    id 'org.jetbrains.kotlin.kapt' version '1.8.0' apply false
+}
+```
+- In, `app/build.gradle`:
+```groovy
+plugins {
+//    ...
+    id 'org.jetbrains.kotlin.kapt'
+}
+```
+- Add Moshi dependency:
+```groovy
+// core moshi
+implementation 'com.squareup.moshi:moshi:1.14.0'
+
+// moshi-kotlin-codegen for maping JSON to kotlin classes
+kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
+
+// converter-moshi to deserialize response body 
+implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+```

@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -73,5 +74,13 @@ dependencies {
     // Convertors to deserialize retrofit response
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
 
+    // core moshi
+    implementation 'com.squareup.moshi:moshi:1.14.0'
+
+    // moshi-kotlin-codegen for mapping JSON to kotlin classes
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
+
+    // converter-moshi to deserialize response body
+    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 
 }
