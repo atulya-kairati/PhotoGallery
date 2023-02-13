@@ -83,4 +83,7 @@ dependencies {
     // converter-moshi to deserialize response body
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 
+    // Coil to easily load and display image
+    implementation("io.coil-kt:coil:2.2.2")
+
 }
