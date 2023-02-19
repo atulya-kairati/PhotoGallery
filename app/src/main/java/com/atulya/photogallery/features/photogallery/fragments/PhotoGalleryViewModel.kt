@@ -22,7 +22,7 @@ class PhotoGalleryViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val flickerPhotos = photoRepository.fetchPhotos()
+                val flickerPhotos = photoRepository.searchPhotos("monkey")
                 _gallery.value = flickerPhotos.response.photoList
             } catch (e: Exception) {
                 e.printStackTrace()

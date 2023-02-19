@@ -50,4 +50,6 @@ class PhotoRepository {
     }
 
     suspend fun fetchPhotos() = flickerApi.fetchPhotos()
+
+    suspend fun searchPhotos(query: String) = flickerApi.searchPhotos(query)
 }
