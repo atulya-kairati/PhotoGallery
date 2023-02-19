@@ -1,6 +1,8 @@
 package com.atulya.photogallery.core.repository
 
 import com.atulya.photogallery.core.api.FlickerApi
+import com.atulya.photogallery.core.interceptor.PhotoInterceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -25,10 +27,15 @@ class PhotoRepository {
          * classes.
          */
 
+        // Creating a client to add interceptor
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(PhotoInterceptor())
+            .build()
 
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.flickr.com/")
             .addConverterFactory(MoshiConverterFactory.create())
+            .client(okHttpClient)
             .build()
 
         /**
