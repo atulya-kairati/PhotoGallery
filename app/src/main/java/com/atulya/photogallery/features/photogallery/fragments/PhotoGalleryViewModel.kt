@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atulya.photogallery.core.models.GalleryItem
 import com.atulya.photogallery.core.repository.PhotoRepository
+import com.atulya.photogallery.core.singletons.FlickerApiSingleton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +23,10 @@ class PhotoGalleryViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val flickerPhotos = photoRepository.searchPhotos("monkey")
+                val flickerPhotos = photoRepository.searchPhotos(
+                    "monkey",
+                    FlickerApiSingleton.get()
+                )
                 _gallery.value = flickerPhotos.response.photoList
             } catch (e: Exception) {
                 e.printStackTrace()
