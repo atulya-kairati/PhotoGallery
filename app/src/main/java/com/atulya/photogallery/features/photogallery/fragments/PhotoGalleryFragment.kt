@@ -3,6 +3,7 @@ package com.atulya.photogallery.features.photogallery.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -16,7 +17,7 @@ import com.atulya.photogallery.databinding.FragmentPhotoGalleryBinding
 import com.atulya.photogallery.features.photogallery.recyclerView.PhotoListAdapter
 import kotlinx.coroutines.launch
 
-const val TAG = "# PhotoGalleryFragment"
+const val TAG = "#> PhotoGalleryFragment"
 
 class PhotoGalleryFragment : Fragment(), MenuProvider {
 
@@ -34,6 +35,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         savedInstanceState: Bundle?
     ): View? {
 
+        // To add items in app bar
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
@@ -61,11 +63,38 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         super.onDestroyView()
     }
 
+    // App bar menu functions --- START
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.fragment_photo_gallery, menu)
+
+        // Adding listener to search view
+        val searchItem = menu.findItem(R.id.menu_item_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                viewModel.setQuery(query ?: "")
+                Log.d(TAG, "Query: $query")
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d(TAG, "Text changed: $newText")
+                return true
+            }
+
+        })
+
     }
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return true
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when(menuItem.itemId) {
+        R.id.menu_item_search -> {
+            true
+        }
+        R.id.menu_item_clear -> {
+            true
+        }
+        else -> false
     }
+    // App bar menu functions --- END
 }

@@ -9,7 +9,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.create
 
 class PhotoRepository {
-    suspend fun fetchPhotos(flickerApi: FlickerApi) = flickerApi.fetchPhotos()
+    suspend fun fetchPhotos(flickerApi: FlickerApi) = flickerApi.fetchPhotos().response.photoList
 
-    suspend fun searchPhotos(query: String, flickerApi: FlickerApi) = flickerApi.searchPhotos(query)
+    suspend fun searchPhotos(query: String, flickerApi: FlickerApi) = flickerApi.searchPhotos(query).response.photoList
 }

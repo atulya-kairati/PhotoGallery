@@ -23,15 +23,24 @@ class PhotoGalleryViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val flickerPhotos = photoRepository.searchPhotos(
-                    "monkey",
-                    FlickerApiSingleton.get()
-                )
-                _gallery.value = flickerPhotos.response.photoList
+                val flickerPhotos = fetchPhotos()
+                _gallery.value = flickerPhotos
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
 
+    }
+
+    fun setQuery(query: String) {
+        viewModelScope.launch {
+            _gallery.value = fetchPhotos(query)
+        }
+    }
+
+    private suspend fun fetchPhotos(query: String = "") = if (query.isEmpty()) {
+        photoRepository.fetchPhotos(FlickerApiSingleton.get())
+    } else {
+        photoRepository.searchPhotos(query, FlickerApiSingleton.get())
     }
 }
