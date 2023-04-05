@@ -92,6 +92,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
             true
         }
         R.id.menu_item_clear -> {
+            viewModel.setQuery("")
             true
         }
         else -> false
