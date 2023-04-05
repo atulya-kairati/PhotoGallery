@@ -86,4 +86,7 @@ dependencies {
     // Coil to easily load and display image
     implementation("io.coil-kt:coil:2.2.2")
 
+    // Datastore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
 }

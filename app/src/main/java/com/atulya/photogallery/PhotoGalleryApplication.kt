@@ -1,12 +1,14 @@
 package com.atulya.photogallery
 
 import android.app.Application
-import com.atulya.photogallery.core.singletons.FlickerApiSingleton
+import com.atulya.photogallery.core.datastore.PreferenceRepository
+import com.atulya.photogallery.core.photorepository.PhotoRepository
 
-class PhotoGalleryApplication: Application() {
+class PhotoGalleryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        FlickerApiSingleton.init()
+        PhotoRepository.init()
+        PreferenceRepository.init(applicationContext)
     }
 }
