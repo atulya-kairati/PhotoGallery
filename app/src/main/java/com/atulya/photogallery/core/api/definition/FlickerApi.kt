@@ -1,6 +1,6 @@
-package com.atulya.photogallery.core.api
+package com.atulya.photogallery.core.api.definition
 
-import com.atulya.photogallery.core.models.FlickerResponse
+import com.atulya.photogallery.core.api.models.FlickerResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

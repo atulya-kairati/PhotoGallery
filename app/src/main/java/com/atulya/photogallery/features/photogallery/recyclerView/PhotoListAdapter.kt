@@ -3,7 +3,7 @@ package com.atulya.photogallery.features.photogallery.recyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.atulya.photogallery.core.models.GalleryItem
+import com.atulya.photogallery.core.api.models.GalleryItem
 import com.atulya.photogallery.databinding.ItemPhotoGalleryBinding
 
 class PhotoListAdapter(private val photoList: List<GalleryItem>) :

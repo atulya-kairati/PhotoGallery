@@ -3,7 +3,7 @@ package com.atulya.photogallery.features.photogallery.fragments
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atulya.photogallery.core.datastore.PreferenceRepository
-import com.atulya.photogallery.core.models.GalleryItem
+import com.atulya.photogallery.core.api.models.GalleryItem
 import com.atulya.photogallery.core.photorepository.PhotoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

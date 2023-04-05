@@ -1,4 +1,4 @@
-package com.atulya.photogallery.core.interceptor
+package com.atulya.photogallery.core.api.interceptor
 
 import okhttp3.HttpUrl
 import okhttp3.Interceptor

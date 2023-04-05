@@ -1,7 +1,7 @@
 package com.atulya.photogallery.core.photorepository
 
-import com.atulya.photogallery.core.api.FlickerApi
-import com.atulya.photogallery.core.interceptor.PhotoInterceptor
+import com.atulya.photogallery.core.api.definition.FlickerApi
+import com.atulya.photogallery.core.api.interceptor.PhotoInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

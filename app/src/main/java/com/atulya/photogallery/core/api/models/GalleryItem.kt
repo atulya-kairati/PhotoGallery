@@ -1,4 +1,4 @@
-package com.atulya.photogallery.core.models
+package com.atulya.photogallery.core.api.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
