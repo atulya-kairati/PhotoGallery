@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_search"
+        android:id="@+id/search_view"
         android:title="@string/search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom"
         />
 
     <item
-        android:id="@+id/menu_item_clear"
+        android:id="@+id/clear_search"
         android:title="@string/clear_search"
         app:showAsAction="never"/>
 

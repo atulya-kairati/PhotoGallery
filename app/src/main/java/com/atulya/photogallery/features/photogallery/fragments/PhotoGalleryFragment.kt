@@ -23,6 +23,8 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
 
     private val viewModel: PhotoGalleryViewModel by viewModels()
 
+    private var searchView: SearchView? = null
+
     private var _binding: FragmentPhotoGalleryBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
@@ -50,9 +52,10 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.gallery.collect { photos ->
-                    binding.photoGrid.adapter = PhotoListAdapter(photos)
-                    Log.d(TAG, "onViewCreated: $photos")
+                viewModel.uiState.collect { uiState ->
+                    binding.photoGrid.adapter = PhotoListAdapter(uiState.images)
+                    searchView?.setQuery(uiState.query, false)
+                    Log.d(TAG, "onViewCreated: $uiState")
                 }
             }
         }
@@ -60,6 +63,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
 
     override fun onDestroyView() {
         _binding = null
+        searchView = null
         super.onDestroyView()
     }
 
@@ -68,13 +72,16 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         menuInflater.inflate(R.menu.fragment_photo_gallery, menu)
 
         // Adding listener to search view
-        val searchItem = menu.findItem(R.id.menu_item_search)
-        val searchView = searchItem.actionView as SearchView
+        val searchItem = menu.findItem(R.id.search_view)
+        searchView = searchItem.actionView as SearchView
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.setQuery(query ?: "")
                 Log.d(TAG, "Query: $query")
+
+                // Dismisses virtual keyboard
+                searchView?.clearFocus()
                 return true
             }
 
@@ -87,11 +94,12 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
 
     }
 
+
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when(menuItem.itemId) {
-        R.id.menu_item_search -> {
+        R.id.search_view -> {
             true
         }
-        R.id.menu_item_clear -> {
+        R.id.clear_search -> {
             viewModel.setQuery("")
             true
         }
