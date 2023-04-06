@@ -55,6 +55,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
                 viewModel.uiState.collect { uiState ->
                     binding.photoGrid.adapter = PhotoListAdapter(uiState.images)
                     searchView?.setQuery(uiState.query, false)
+                    binding.progressBar.visibility = View.INVISIBLE
                     Log.d(TAG, "onViewCreated: $uiState")
                 }
             }
@@ -75,13 +76,16 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         val searchItem = menu.findItem(R.id.search_view)
         searchView = searchItem.actionView as SearchView
 
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 viewModel.setQuery(query ?: "")
                 Log.d(TAG, "Query: $query")
 
                 // Dismisses virtual keyboard
                 searchView?.clearFocus()
+
+                // Showing progress bar
+                binding.progressBar.visibility = View.VISIBLE
                 return true
             }
 
@@ -95,7 +99,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
     }
 
 
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when(menuItem.itemId) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
         R.id.search_view -> {
             true
         }
