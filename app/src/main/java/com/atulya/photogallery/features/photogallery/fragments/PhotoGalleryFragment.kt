@@ -12,10 +12,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.work.*
 import com.atulya.photogallery.R
+import com.atulya.photogallery.core.worker.PollWorker
 import com.atulya.photogallery.databinding.FragmentPhotoGalleryBinding
 import com.atulya.photogallery.features.photogallery.recyclerView.PhotoListAdapter
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 const val TAG = "#> PhotoGalleryFragment"
 
@@ -30,6 +33,22 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         get() = checkNotNull(_binding) {
             "binding is not initialized. Check is the view is visible"
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .build()
+
+        val workerRequest = OneTimeWorkRequest
+            .Builder(PollWorker::class.java)
+            .setConstraints(constraints)
+            .setInitialDelay(10, TimeUnit.SECONDS)
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueue(workerRequest)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
