@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class PreferenceRepository private  constructor(
+class PreferenceRepository private constructor(
     private val dataStore: DataStore<Preferences>
 ) {
 
@@ -19,20 +19,31 @@ class PreferenceRepository private  constructor(
         it[SEARCH_QUERY] ?: ""
     }.distinctUntilChanged()
 
-    suspend fun setStoredQuery(query: String){
+    suspend fun setStoredQuery(query: String) {
         dataStore.edit { pref ->
             pref[SEARCH_QUERY] = query
         }
     }
 
-    companion object{
+    val lastResultId: Flow<String> = dataStore.data.map {
+        it[PREF_LAST_RESULT_ID] ?: ""
+    }.distinctUntilChanged()
+
+    suspend fun setLastResultId(lastResultId: String) {
+        dataStore.edit { pref ->
+            pref[PREF_LAST_RESULT_ID] = lastResultId
+        }
+    }
+
+    companion object {
         private val SEARCH_QUERY = stringPreferencesKey("search_query")
+        private val PREF_LAST_RESULT_ID = stringPreferencesKey("lastResultId")
 
         private var INSTANCE: PreferenceRepository? = null
 
         fun init(context: Context) {
 
-            if(INSTANCE != null) return
+            if (INSTANCE != null) return
 
             val dataStore = PreferenceDataStoreFactory.create {
                 context.preferencesDataStoreFile("settings")
@@ -41,7 +52,7 @@ class PreferenceRepository private  constructor(
             INSTANCE = PreferenceRepository(dataStore)
         }
 
-        fun get() = checkNotNull(INSTANCE){
+        fun get() = checkNotNull(INSTANCE) {
             "Initialise PreferenceRepository first by calling PreferenceRepository.init()"
         }
     }
