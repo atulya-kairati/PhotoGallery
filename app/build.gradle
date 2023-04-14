@@ -92,4 +92,7 @@ dependencies {
     // WorkManager
     implementation 'androidx.work:work-runtime-ktx:2.8.1'
 
+    // easy permission
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
 }
