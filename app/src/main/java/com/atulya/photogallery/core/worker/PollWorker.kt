@@ -51,7 +51,9 @@ class PollWorker(
                     "No updates: ID($resultId)"
                 )
             } else {
+                // Updating the lastResultId
                 preferences.setLastResultId(resultId)
+
                 Log.d(
                     "#> ${this::class.simpleName}",
                     "New photos!! ID($resultId)"

@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.*
 import com.atulya.photogallery.R
+import com.atulya.photogallery.core.utils.POLL_WORK
 import com.atulya.photogallery.core.worker.PollWorker
 import com.atulya.photogallery.databinding.FragmentPhotoGalleryBinding
 import com.atulya.photogallery.features.photogallery.recyclerView.PhotoListAdapter
@@ -27,6 +28,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
     private val viewModel: PhotoGalleryViewModel by viewModels()
 
     private var searchView: SearchView? = null
+    private var pollButton: MenuItem? = null
 
     private var _binding: FragmentPhotoGalleryBinding? = null
     private val binding
@@ -34,27 +36,12 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
             "binding is not initialized. Check is the view is visible"
         }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .build()
-
-        val workerRequest = OneTimeWorkRequest
-            .Builder(PollWorker::class.java)
-            .setConstraints(constraints)
-            .setInitialDelay(10, TimeUnit.SECONDS)
-            .build()
-
-        WorkManager.getInstance(requireContext()).enqueue(workerRequest)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // To add items in app bar
         val menuHost: MenuHost = requireActivity()
@@ -74,6 +61,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
                 viewModel.uiState.collect { uiState ->
                     binding.photoGrid.adapter = PhotoListAdapter(uiState.images)
                     searchView?.setQuery(uiState.query, false)
+                    updatePollingState(uiState.isPolling)
                     binding.progressBar.visibility = View.INVISIBLE
                     Log.d(TAG, "onViewCreated: $uiState")
                 }
@@ -81,15 +69,12 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         }
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        searchView = null
-        super.onDestroyView()
-    }
 
     // App bar menu functions --- START
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.fragment_photo_gallery, menu)
+
+        pollButton = menu.findItem(R.id.polling_button)
 
         // Adding listener to search view
         val searchItem = menu.findItem(R.id.search_view)
@@ -126,7 +111,51 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
             viewModel.setQuery("")
             true
         }
+        R.id.polling_button -> {
+            viewModel.toggleIsPolling()
+            true
+        }
         else -> false
     }
     // App bar menu functions --- END
+
+    private fun updatePollingState(isPolling: Boolean) {
+        val pollButtonTitle = if(isPolling){
+            getString(R.string.start_polling)
+        }
+        else {
+            getString(R.string.stop_polling)
+        }
+
+        pollButton?.title = pollButtonTitle
+
+        if (isPolling){
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+
+            val periodicWorkRequest = PeriodicWorkRequestBuilder<PollWorker>(
+                15, // 15 min is that least interval allowed by android
+                TimeUnit.MINUTES
+            )
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+                POLL_WORK,
+                ExistingPeriodicWorkPolicy.KEEP, //keep old, discard new
+                periodicWorkRequest
+            )
+        }
+        else {
+            WorkManager.getInstance(requireContext()).cancelUniqueWork(POLL_WORK)
+        }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        searchView = null
+        pollButton = null
+        super.onDestroyView()
+    }
 }

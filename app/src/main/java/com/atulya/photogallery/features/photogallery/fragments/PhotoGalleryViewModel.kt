@@ -1,11 +1,16 @@
 package com.atulya.photogallery.features.photogallery.fragments
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atulya.photogallery.core.api.models.GalleryItem
 import com.atulya.photogallery.core.datastore.PreferenceRepository
 import com.atulya.photogallery.core.photorepository.PhotoRepository
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PhotoGalleryViewModel : ViewModel() {
@@ -39,8 +44,27 @@ class PhotoGalleryViewModel : ViewModel() {
                         )
                     }
                 }
+
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+
+        /**
+         * collect method is a blocking function so
+         * if two collects are placed in that same
+         * coroutine then only the first one will work.
+         *
+         * Because the second collect will be unreachable
+         */
+
+        viewModelScope.launch {
+            preferenceRepository.isPolling.collect { isPolling ->
+                _uiState.update { old ->
+                    old.copy(
+                        isPolling = isPolling
+                    )
+                }
             }
         }
 
@@ -49,6 +73,13 @@ class PhotoGalleryViewModel : ViewModel() {
     fun setQuery(query: String) {
         viewModelScope.launch {
             preferenceRepository.setStoredQuery(query)
+        }
+    }
+
+    fun toggleIsPolling() {
+        Log.d("#> ${this::class.simpleName}", "toggleIsPolling")
+        viewModelScope.launch {
+            preferenceRepository.setIsPolling(! uiState.value.isPolling)
         }
     }
 
@@ -61,5 +92,6 @@ class PhotoGalleryViewModel : ViewModel() {
 
 data class PhotoGalleryUiState(
     val images: List<GalleryItem> = listOf(),
-    val query: String = ""
+    val query: String = "",
+    val isPolling: Boolean = false
 )
