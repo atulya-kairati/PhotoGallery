@@ -1,5 +1,6 @@
 package com.atulya.photogallery.core.api.models
 
+import android.net.Uri
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -17,5 +18,15 @@ data class GalleryItem (
     val title: String,
 
     @Json(name = "url_s") // since the photo url is labeled as "url_s" in json
-    val url: String
-)
+    val url: String,
+
+    @Json(name = "owner")
+    val userId: String
+){
+    val photoPageUri: Uri
+        get() = Uri.parse("https://www.flickr.com/photos/")
+            .buildUpon()
+            .appendPath(userId)
+            .appendPath(id)
+            .build()
+}

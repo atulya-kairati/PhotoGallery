@@ -1,8 +1,14 @@
 package com.atulya.photogallery.features.photogallery.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -12,7 +18,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.atulya.photogallery.R
 import com.atulya.photogallery.core.utils.POLL_WORK
 import com.atulya.photogallery.core.worker.PollWorker
@@ -59,7 +69,10 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
-                    binding.photoGrid.adapter = PhotoListAdapter(uiState.images)
+                    binding.photoGrid.adapter = PhotoListAdapter(uiState.images) { photoPageUri ->
+                        val browserIntent = Intent(Intent.ACTION_VIEW, photoPageUri)
+                        startActivity(browserIntent)
+                    }
                     searchView?.setQuery(uiState.query, false)
                     updatePollingState(uiState.isPolling)
                     binding.progressBar.visibility = View.INVISIBLE
@@ -107,29 +120,31 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
         R.id.search_view -> {
             true
         }
+
         R.id.clear_search -> {
             viewModel.setQuery("")
             true
         }
+
         R.id.polling_button -> {
             viewModel.toggleIsPolling()
             true
         }
+
         else -> false
     }
     // App bar menu functions --- END
 
     private fun updatePollingState(isPolling: Boolean) {
-        val pollButtonTitle = if(isPolling){
+        val pollButtonTitle = if (isPolling) {
             getString(R.string.stop_polling)
-        }
-        else {
+        } else {
             getString(R.string.start_polling)
         }
 
         pollButton?.title = pollButtonTitle
 
-        if (isPolling){
+        if (isPolling) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED)
                 .build()
@@ -151,8 +166,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
                 .getWorkInfosForUniqueWork(POLL_WORK).get()
 
             Log.d("#> ${this::class.simpleName}", info.toString())
-        }
-        else {
+        } else {
             WorkManager.getInstance(requireContext()).cancelUniqueWork(POLL_WORK)
         }
     }
