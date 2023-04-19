@@ -121,10 +121,10 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
 
     private fun updatePollingState(isPolling: Boolean) {
         val pollButtonTitle = if(isPolling){
-            getString(R.string.start_polling)
+            getString(R.string.stop_polling)
         }
         else {
-            getString(R.string.stop_polling)
+            getString(R.string.start_polling)
         }
 
         pollButton?.title = pollButtonTitle
@@ -138,7 +138,7 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
                 15, // 15 min is that least interval allowed by android
                 TimeUnit.MINUTES
             )
-                .setConstraints(constraints)
+//                .setConstraints(constraints)
                 .build()
 
             WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
@@ -146,6 +146,11 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
                 ExistingPeriodicWorkPolicy.KEEP, //keep old, discard new
                 periodicWorkRequest
             )
+
+            val info = WorkManager.getInstance(requireContext())
+                .getWorkInfosForUniqueWork(POLL_WORK).get()
+
+            Log.d("#> ${this::class.simpleName}", info.toString())
         }
         else {
             WorkManager.getInstance(requireContext()).cancelUniqueWork(POLL_WORK)

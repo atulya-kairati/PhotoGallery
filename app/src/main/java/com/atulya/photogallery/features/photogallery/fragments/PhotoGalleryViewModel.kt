@@ -9,7 +9,9 @@ import com.atulya.photogallery.core.photorepository.PhotoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -67,7 +69,6 @@ class PhotoGalleryViewModel : ViewModel() {
                 }
             }
         }
-
     }
 
     fun setQuery(query: String) {
@@ -86,7 +87,9 @@ class PhotoGalleryViewModel : ViewModel() {
     private suspend fun fetchPhotos(query: String = "") = if (query.isEmpty()) {
         photoRepository.fetchPhotos()
     } else {
-        photoRepository.searchPhotos(query)
+        val photos = photoRepository.searchPhotos(query)
+        preferenceRepository.setLastResultId(photos.first().id)
+        photos
     }
 }
 

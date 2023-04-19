@@ -20,7 +20,6 @@ import com.atulya.photogallery.core.utils.NOTIFICATION_CHANNEL_ID
 import com.atulya.photogallery.core.utils.NOTIFICATION_REQUEST_CODE
 import kotlinx.coroutines.flow.first
 
-private const val TAG = "PollWorker"
 
 class PollWorker(
     context: Context,
@@ -28,18 +27,21 @@ class PollWorker(
 ) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
 
-        Log.d("#> ${this::class.simpleName}", "doWork: Doing lot of work!")
+        Log.d("#> ${this::class.simpleName}", "doWork: Doing lots of work!")
 
         val photoRepository = PhotoRepository.get()
         val preferences = PreferenceRepository.get()
 
         val query = preferences.storedQuery.first()
-        val lastResultId = preferences.lastResultId.first()
 
         if (query.isEmpty()) {
             Log.d("#> ${this::class.simpleName}", "No saved queries, quitting!")
             return Result.success()
         }
+
+        val lastResultId = preferences.lastResultId.first()
+//        val lastResultId = "preferences.lastResultId.first()"
+
 
         try {
             val photos = photoRepository.searchPhotos(query)

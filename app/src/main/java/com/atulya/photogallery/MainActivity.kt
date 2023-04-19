@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.atulya.photogallery.core.utils.PERMISSION_REQUEST_CODE
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        TODO("Not yet implemented")
+        Log.d("#> ${this::class.simpleName}", "Permission Granted")
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {

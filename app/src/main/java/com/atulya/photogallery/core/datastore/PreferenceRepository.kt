@@ -1,6 +1,7 @@
 package com.atulya.photogallery.core.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
@@ -31,6 +32,7 @@ class PreferenceRepository private constructor(
     }.distinctUntilChanged()
 
     suspend fun setLastResultId(lastResultId: String) {
+        Log.d("#> ${this::class.simpleName}", "lastResultId: $lastResultId")
         dataStore.edit { pref ->
             pref[PREF_LAST_RESULT_ID] = lastResultId
         }
@@ -49,7 +51,7 @@ class PreferenceRepository private constructor(
     companion object {
         private val SEARCH_QUERY = stringPreferencesKey("search_query")
         private val PREF_LAST_RESULT_ID = stringPreferencesKey("lastResultId")
-        private val PREF_IS_POLLING = booleanPreferencesKey("lastResultId")
+        private val PREF_IS_POLLING = booleanPreferencesKey("isPolling")
 
         private var INSTANCE: PreferenceRepository? = null
 
