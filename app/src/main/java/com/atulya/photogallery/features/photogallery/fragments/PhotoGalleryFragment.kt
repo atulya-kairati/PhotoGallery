@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -70,8 +71,17 @@ class PhotoGalleryFragment : Fragment(), MenuProvider {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { uiState ->
                     binding.photoGrid.adapter = PhotoListAdapter(uiState.images) { photoPageUri ->
-                        val browserIntent = Intent(Intent.ACTION_VIEW, photoPageUri)
-                        startActivity(browserIntent)
+
+                        /**
+                         * To open the page in default browser using implicit intents
+                         *
+                         * val browserIntent = Intent(Intent.ACTION_VIEW, photoPageUri)
+                         * startActivity(browserIntent)
+                         */
+
+                        findNavController().navigate(
+                            PhotoGalleryFragmentDirections.showPhotoPage(photoPageUri)
+                        )
                     }
                     searchView?.setQuery(uiState.query, false)
                     updatePollingState(uiState.isPolling)

@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_container"
-    android:name="com.atulya.photogallery.features.photogallery.fragments.PhotoGalleryFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout="@layout/fragment_photo_gallery"
     tools:context=".MainActivity"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:navGraph="@navigation/nav_graph"
+    app:defaultNavHost="true"
     />

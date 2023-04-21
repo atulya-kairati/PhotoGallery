@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'androidx.navigation.safeargs'
 }
 
 android {
@@ -94,5 +95,10 @@ dependencies {
 
     // easy permission
     implementation 'pub.devrel:easypermissions:3.0.0'
+
+    // Navigation
+    def nav_version = "2.5.3"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
 }

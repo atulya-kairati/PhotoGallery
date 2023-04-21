@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/photoGalleryFragment">
+
+    <fragment
+        android:id="@+id/photoGalleryFragment"
+        android:name="com.atulya.photogallery.features.photogallery.fragments.PhotoGalleryFragment"
+        android:label="PhotoGalleryFragment"
+        tools:layout="@layout/fragment_photo_gallery"
+        >
+        <action
+            android:id="@+id/showPhotoPage"
+            app:destination="@id/photoPageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoPageFragment"
+        android:name="com.atulya.photogallery.features.photopage.fragment.PhotoPageFragment"
+        android:label="PhotoPageFragment"
+        tools:layout="@layout/fragment_photo_page"
+        >
+        <argument
+            android:name="photoPageUrl"
+            app:argType="android.net.Uri" />
+    </fragment>
+</navigation>
